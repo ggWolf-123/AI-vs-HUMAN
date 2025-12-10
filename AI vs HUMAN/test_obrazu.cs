@@ -17,6 +17,11 @@ namespace AI_vs_HUMAN
         public test_obrazu()
         {
             InitializeComponent();
+            this.Shown += (s, e) =>
+            {
+                this.WindowState = FormWindowState.Maximized;
+            };
+
             this.Load += testLoad;
             this.Resize += testResize;
         }

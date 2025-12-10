@@ -116,7 +116,6 @@
             this.Controls.Add(this.challangeBitton);
             this.Name = "test_obrazu";
             this.Text = "test_obrazu";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)(this.pictureToCheck)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

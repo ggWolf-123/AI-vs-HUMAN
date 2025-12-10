@@ -16,8 +16,12 @@ namespace AI_vs_HUMAN
         private Dictionary<Control, Rectangle> originalControlBounds = new Dictionary<Control, Rectangle>();
         public uruchom_model()
         {
-            this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
+            this.Shown += (s, e) =>
+            {
+                this.WindowState = FormWindowState.Maximized;
+            };
+
             this.Load += startLoad;
             this.Resize += startResize;
         }

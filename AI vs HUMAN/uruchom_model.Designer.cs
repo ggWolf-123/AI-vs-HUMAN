@@ -51,7 +51,6 @@
             this.Controls.Add(this.startButton);
             this.Name = "uruchom_model";
             this.Text = "uruchom_model";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
 
         }

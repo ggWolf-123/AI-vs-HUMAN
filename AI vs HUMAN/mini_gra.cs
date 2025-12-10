@@ -17,6 +17,11 @@ namespace AI_vs_HUMAN
         public mini_gra()
         {
             InitializeComponent();
+            this.Shown += (s, e) =>
+            {
+                this.WindowState = FormWindowState.Maximized;
+            };
+
             this.Load += miniGameLoad;
             this.Resize += miniGameResize;
         }
