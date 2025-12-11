@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +16,7 @@ namespace AI_vs_HUMAN
     {
         private Size originalSize;
         private Dictionary<Control, Rectangle> originalControlBounds = new Dictionary<Control, Rectangle>();
+        private Process fastApiProcess;
         public uruchom_model()
         {
             InitializeComponent();
@@ -70,12 +73,65 @@ namespace AI_vs_HUMAN
             }
         }
 
-        private void startButton_Click(object sender, EventArgs e)
+        private async void startButton_Click(object sender, EventArgs e)
         {
+            await StartFastApiServer();
             this.Hide();
             test_obrazu test_Obrazu = new test_obrazu();
             test_Obrazu.ShowDialog();
             this.Close();
+        }
+        private async Task StartFastApiServer()
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var response = await client.GetAsync("http://127.0.0.1:8000/docs");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Server is already running
+                        return;
+                    }
+                }            }
+            catch { }// Server is not running, proceed to start it
+            fastApiProcess = new Process();
+            fastApiProcess.StartInfo.FileName = "cmd.exe";
+            fastApiProcess.StartInfo.Arguments = "/C uvicorn test_zdjecie_api:app --host 0.0.0.0 --port 8000";
+            fastApiProcess.StartInfo.CreateNoWindow = true;
+            fastApiProcess.StartInfo.UseShellExecute = false;
+            fastApiProcess.Start();
+
+            using (HttpClient http = new HttpClient())
+            {
+                for (int i = 0; i < 40; i++)
+                {
+                    try
+                    {
+                        var r = await http.GetAsync("http://127.0.0.1:8000/docs");
+                        if (r.IsSuccessStatusCode)
+                        {
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        await Task.Delay(250);
+                    }
+                }
+            }
+                
+            MessageBox.Show("Nie udało się uruchomić serwera FastAPI.");
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (fastApiProcess != null && !fastApiProcess.HasExited)
+            {
+                fastApiProcess.Kill();
+                fastApiProcess.Dispose();
+            }
+            base.OnFormClosing(e);
         }
     }
 }

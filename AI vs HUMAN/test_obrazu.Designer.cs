@@ -32,7 +32,7 @@
             this.getPhotoButton = new System.Windows.Forms.Button();
             this.pictureToCheck = new System.Windows.Forms.PictureBox();
             this.photoPath = new System.Windows.Forms.OpenFileDialog();
-            this.button1 = new System.Windows.Forms.Button();
+            this.checkButton = new System.Windows.Forms.Button();
             this.answerAIorNOT = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureToCheck)).BeginInit();
@@ -72,16 +72,16 @@
             // 
             this.photoPath.FileName = "photoPath";
             // 
-            // button1
+            // checkButton
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
-            this.button1.Location = new System.Drawing.Point(1225, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(507, 327);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "SPRAWDŹ!!!";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.checkButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
+            this.checkButton.Location = new System.Drawing.Point(1225, 12);
+            this.checkButton.Name = "checkButton";
+            this.checkButton.Size = new System.Drawing.Size(507, 327);
+            this.checkButton.TabIndex = 5;
+            this.checkButton.Text = "SPRAWDŹ!!!";
+            this.checkButton.UseVisualStyleBackColor = true;
+            this.checkButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // answerAIorNOT
             // 
@@ -89,9 +89,9 @@
             this.answerAIorNOT.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F);
             this.answerAIorNOT.Location = new System.Drawing.Point(1228, 526);
             this.answerAIorNOT.Name = "answerAIorNOT";
-            this.answerAIorNOT.Size = new System.Drawing.Size(515, 46);
+            this.answerAIorNOT.Size = new System.Drawing.Size(31, 46);
             this.answerAIorNOT.TabIndex = 4;
-            this.answerAIorNOT.Text = "Nie wygenerowane przez AI";
+            this.answerAIorNOT.Text = " ";
             // 
             // label1
             // 
@@ -108,7 +108,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1744, 1061);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.checkButton);
             this.Controls.Add(this.answerAIorNOT);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureToCheck);
@@ -128,7 +128,7 @@
         private System.Windows.Forms.Button getPhotoButton;
         private System.Windows.Forms.PictureBox pictureToCheck;
         private System.Windows.Forms.OpenFileDialog photoPath;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button checkButton;
         private System.Windows.Forms.Label answerAIorNOT;
         private System.Windows.Forms.Label label1;
     }

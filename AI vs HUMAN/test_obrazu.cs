@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Text.Json;
 namespace AI_vs_HUMAN
 {
     public partial class test_obrazu : Form
     {
         private Size originalSize;
         private Dictionary<Control, Rectangle> originalControlBounds = new Dictionary<Control, Rectangle>();
+        private int result_from_model = -1;
         public test_obrazu()
         {
             InitializeComponent();
@@ -101,20 +104,57 @@ namespace AI_vs_HUMAN
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Image img = Image.FromFile(photoPath.FileName);
-                pictureToCheck.Image = img;
-                pictureToCheck.SizeMode = PictureBoxSizeMode.Zoom;
-            }
-            catch (Exception ex)
+            if (string.IsNullOrEmpty(photoPath.FileName))
             {
                 MessageBox.Show("Nie podano zdjęcia.");
                 return;
             }
-        }
+            try
+            {
+                pictureToCheck.Image = Image.FromFile(photoPath.FileName);
+                pictureToCheck.SizeMode = PictureBoxSizeMode.Zoom;
 
+                result_from_model = await SendImageToModel(photoPath.FileName);
+                if (result_from_model == 0)
+                    answerAIorNOT.Text="Model mówi: to nie jest AI";
+                else if (result_from_model == 1)
+                    answerAIorNOT.Text="Model mówi: to jest AI";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas ładowania zdjęcia\n{ex.Message}");
+                return;
+            }
+        }
+        private async Task<int> SendImageToModel(string filePath)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://127.0.0.1:8000/");
+                using (var content = new MultipartFormDataContent())
+                {
+                    var imageContent = new ByteArrayContent(System.IO.File.ReadAllBytes(filePath));
+                    string ext=System.IO.Path.GetExtension(filePath).ToLower();
+                    string mime = "image/jpeg";
+                    if (ext == ".png") mime = "image/png";
+                    else if (ext == ".bmp") mime = "image/bmp";
+                    else if (ext == ".gif") mime = "image/gif";
+                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(mime);
+                    content.Add(imageContent, "file", System.IO.Path.GetFileName(filePath));
+                    
+                    HttpResponseMessage response = await client.PostAsync("predict", content);
+                    response.EnsureSuccessStatusCode();
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    using(var doc=JsonDocument.Parse(responseString))
+                    {
+                        int prediction = doc.RootElement.GetProperty("result").GetInt32();
+                        return prediction;
+                    }
+                }
+            }
+        }
     }
 }
